@@ -1,0 +1,47 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"rsync_ssh":
+		{
+			"excludes":
+			[
+				".git*",
+				"_build",
+				"blib",
+				"Build"
+			],
+			"options":
+			[
+
+			],
+			"remotes":
+			{
+				"autonoom":
+				[
+					{
+						"enabled": 1,
+						"excludes":
+						[
+						],
+						"options":
+						[
+						],
+						"remote_host": "10.8.0.6",
+						"remote_path": "/home/ubuntu/catkin_ws/src/autonoom",
+						"remote_port": 22,
+						"remote_post_command": "",
+						"remote_pre_command": "",
+						"remote_user": "ubuntu"
+					}
+				]
+			},
+			"sync_on_save": true
+		}
+	}
+}
