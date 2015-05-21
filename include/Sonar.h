@@ -8,8 +8,9 @@ class Sonar : Sensor
 public:
 	Sonar(int _address);
 	~Sonar();
+	int getLastMeasurement();
 private:
-	int lastMeasurementInCm();
+	int lastMeasurementInCm;
 };
 
 #endif

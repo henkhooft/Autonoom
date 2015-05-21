@@ -4,9 +4,9 @@
 class Sensor
 {
 public:
-	virtual Sensor();
-	virtual ~Sensor();
-	virtual int getLastMeasurement(); };
+	Sensor(int _address) {address = _address; }
+	virtual ~Sensor() { } 
+	virtual int getLastMeasurement() { return 0; } 
 	inline int getAddress() { return address; }
 protected:
 	int address;

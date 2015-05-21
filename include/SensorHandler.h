@@ -11,7 +11,7 @@ public:
 	~SensorHandler();
 	void updateAllSensors();
 private:
-	List<Sensor> sensors;
+	std::list<Sensor*> sensors;
 };
 
 #endif

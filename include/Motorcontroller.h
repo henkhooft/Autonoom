@@ -12,7 +12,7 @@ public:
 	bool drive(Movement move);
 	void stop();
 private:
-	ConnectionHandler con;
+	ConnectionHandler* apCon;
 };
 
 #endif

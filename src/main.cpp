@@ -9,13 +9,17 @@
 #include "ConnectionHandler.h"
 #include "SensorHandler.h"
 
-int main(int argc, char **argv)
-{
-	setup();
-	return 1;
-}
-
 void setup()
 {
 
+}
+
+int main(int argc, char **argv)
+{
+	ros::init(argc, argv, "autonoom");
+	setup();
+
+
+	ros::spin();
+	return 0;
 }

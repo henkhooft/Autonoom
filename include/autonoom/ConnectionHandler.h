@@ -1,17 +1,17 @@
-#ifndef CONNECTIONHANDLER
-#define CONNECTIONHANDLER
+#ifndef CONNECTIONHANDLER_H
+#define CONNECTIONHANDLER_H
 
 class ConnectionHandler
 {
 public:
 	~ConnectionHandler();
-	static ConnectionHandler getInstance();
+	static ConnectionHandler& getInstance();
 	void init();
 	int readData(char* buffer);
 	bool writeData(char* buffer);
 private:
-	ConnectionHandler();
-	ConnectionHandler instance;
+	ConnectionHandler(ConnectionHandler const&) = delete;
+	void operator=(ConnectionHandler const& ) = delete;
 };
 
 #endif

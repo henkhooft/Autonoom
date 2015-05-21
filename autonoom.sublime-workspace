@@ -3,10 +3,42 @@
 	{
 		"selected_items":
 		[
+			[
+				"Co",
+				"ConnectionHandler"
+			],
+			[
+				"def",
+				"define"
+			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "src/main.cpp",
+			"settings":
+			{
+				"buffer_size": 270,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "include/ConnectionHandler.h",
+			"settings":
+			{
+				"buffer_size": 633,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/ConnectionHandler.cpp",
+			"settings":
+			{
+				"buffer_size": 1868,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -51,8 +83,41 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/home/cu6e/autonoom",
+		"/home/cu6e/autonoom/include",
+		"/home/cu6e/autonoom/src"
+	],
 	"file_history":
 	[
+		"/home/cu6e/autonoom/include/Sonar.h",
+		"/home/cu6e/autonoom/src/Sonar.cpp",
+		"/home/cu6e/autonoom/include/Motorcontroller.h",
+		"/home/cu6e/autonoom/include/SensorHandler.h",
+		"/home/cu6e/autonoom/include/Sensor.h",
+		"/home/cu6e/autonoom/include/ImageHandler.h",
+		"/home/cu6e/autonoom/CMakeLists.txt",
+		"/home/cu6e/autonoom/src/ConnectionHandler.cpp",
+		"/home/cu6e/autonoom/include/ConnectionHandler.h",
+		"/home/cu6e/autonoom/src/Movement.cpp",
+		"/home/cu6e/autonoom/include/autonoom/ConnectionHandler.h",
+		"/home/cu6e/autonoom/include/ImageProcessor.h",
+		"/home/cu6e/autonoom/src/ImageHandler.cpp",
+		"/home/cu6e/autonoom/include/autonoom/Sonar.h",
+		"/home/cu6e/autonoom/include/autonoom/SensorHandler.h",
+		"/home/cu6e/autonoom/src/SensorHandler.cpp",
+		"/home/cu6e/autonoom/src/Options.cpp",
+		"/home/cu6e/autonoom/include/autonoom/Options.h",
+		"/home/cu6e/autonoom/include/autonoom/Movement.h",
+		"/home/cu6e/autonoom/src/Motorcontroller.cpp",
+		"/home/cu6e/autonoom/src/ImageProcessor.cpp",
+		"/home/cu6e/autonoom/include/autonoom/ImageHandler.h",
+		"/home/cu6e/autonoom/src/main.cpp",
+		"/home/cu6e/autonoom/include/autonoom/Sensor.h",
+		"/home/cu6e/autonoom/include/autonoom/Motorcontroller.h",
+		"/home/cu6e/autonoom/include/autonoom/ImageProcessor.h",
+		"/home/cu6e/autonoom/autonoom.sublime-project",
 		"/home/cu6e/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
 		"/home/cu6e/.config/sublime-text-3/Packages/User/RSync.sublime-settings"
 	],
@@ -89,8 +154,94 @@
 	"groups":
 	[
 		{
+			"selected": 2,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/main.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 270,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								210,
+								210
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "include/ConnectionHandler.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 633,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								121,
+								121
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/ConnectionHandler.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1868,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								316,
+								316
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": -0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -171,7 +322,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 205.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

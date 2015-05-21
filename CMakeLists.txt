@@ -93,6 +93,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include 
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -102,7 +103,8 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(autonoom_node src/main.cpp)
+add_executable(autonoom_node src/main.cpp src/ConnectionHandler.cpp src/ImageHandler.cpp src/ImageProcessor.cpp 
+	src/Motorcontroller.cpp src/Movement.cpp src/Options.cpp src/SensorHandler.cpp src/Sonar.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
