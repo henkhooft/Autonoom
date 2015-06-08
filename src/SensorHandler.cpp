@@ -2,8 +2,9 @@
 
 // Constructor
 SensorHandler::SensorHandler()
+: cn(ConnectionHandler::getInstance())
 {
-
+	
 }
 
 // Destructor

@@ -1,19 +1,19 @@
 #include "ImageHandler.h"
 
 // Constructor
-ImageHandler::ImageHandler()
+ImageHandler::ImageHandler(ros::NodeHandle* _nh)
+: nh(_nh)
 {
-	nh = new ros::NodeHandle();
-	it = new image_transport::ImageTransport(nh);
-	sub = it->subscribe("camera/image", 1, imageCallback);
+	// nh = new ros::NodeHandle();
+	it = new image_transport::ImageTransport(*nh);
+	sub = it->subscribe("camera/image", 1, &ImageHandler::imageCallback, this);
+
 }
 
 // Destructor
 ImageHandler::~ImageHandler()
 {
-	delete nh;
 	delete it;
-	delete sub;
 }
 
 /**

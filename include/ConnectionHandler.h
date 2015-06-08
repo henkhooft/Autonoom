@@ -10,6 +10,8 @@
 #include <errno.h>		// Error definitions
 #include <termios.h>	// POSIX terminal control
 
+#include "ros/ros.h"
+
 class ConnectionHandler
 {
 public:
@@ -22,6 +24,9 @@ public:
 	void init();
 	int readData(char buffer[]);
 	bool writeData(unsigned char buffer[]);
+
+	void parseData(std::string s);
+	bool writeString(std::string s);
 private:
 	ConnectionHandler();
 	int USB;

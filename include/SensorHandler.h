@@ -3,6 +3,7 @@
 
 #include <list>
 #include "Sensor.h"
+#include "ConnectionHandler.h"
 
 class SensorHandler
 {
@@ -12,6 +13,7 @@ public:
 	void updateAllSensors();
 private:
 	std::list<Sensor*> sensors;
+	ConnectionHandler& cn;
 };
 
 #endif

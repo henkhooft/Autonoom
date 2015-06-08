@@ -9,14 +9,14 @@
 class ImageHandler
 {
 public:
-	ImageHandler();
+	ImageHandler(ros::NodeHandle* _nh);
 	~ImageHandler();
 	void imageCallback(const sensor_msgs::ImageConstPtr& msg);
 	void process();
 private:
 	ros::NodeHandle* nh;
 	image_transport::ImageTransport* it;
-	image_transport::Subscriber* sub;
+	image_transport::Subscriber sub;
 	ImageProcessor processor;
 };
 

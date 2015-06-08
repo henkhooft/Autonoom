@@ -17,6 +17,7 @@ Options::~Options()
 
 void Options::reset()
 {
+	isDriving = false;
 	speed_limit = SPEED_LIMIT_DEFAULT;
 	sonar_limit = SONAR_LIMIT_DEFAULT;
 }

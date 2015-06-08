@@ -7,6 +7,8 @@ project(autonoom)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  image_transport
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -43,11 +45,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  CarResponse.msg
+  CarRequest.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -64,10 +66,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  sensor_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -81,7 +84,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES autonoom
-#  CATKIN_DEPENDS roscpp std_msgs
+   CATKIN_DEPENDS message_runtime roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -104,7 +107,7 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(autonoom_node src/main.cpp src/ConnectionHandler.cpp src/ImageHandler.cpp src/ImageProcessor.cpp 
-	src/Motorcontroller.cpp src/Movement.cpp src/Options.cpp src/SensorHandler.cpp src/Sonar.cpp)
+	src/Motorcontroller.cpp src/Movement.cpp src/Options.cpp src/SensorHandler.cpp src/Sonar.cpp src/MessageHandler.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
