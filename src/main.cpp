@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle* nh = new ros::NodeHandle();
 	MessageHandler mh(nh, options);
 	ImageHandler ih(nh);
-
+	ConnectionHandler::getInstance();
 
 	ROS_INFO("Car node initialized");
 	ros::spin();
