@@ -10,8 +10,11 @@
 #include <errno.h>		// Error definitions
 #include <termios.h>	// POSIX terminal control
 #include <sys/signal.h> // Signal handling
+#include <pthread.h>	// Threading
 
 #include "ros/ros.h"
+#include "Sensor.h"
+#include "Sonar.h"
 
 class ConnectionHandler
 {
@@ -23,13 +26,19 @@ public:
 		return instance;
 	}
 	void init();
-	int readData(char buffer[]);
 	void parseData(std::string s);
 	bool writeString(std::string s);
+	void start();
+	inline void addSensors(std::vector<Sensor*>& _sensors) {sensors = _sensors;}
 private:
 	ConnectionHandler();
-	static void signal_handler_IO(int status);
+	void *run();
+	static void *run_helper(void *context)
+	{
+		return ((ConnectionHandler*)context)->run();
+	}
 	int USB;
+	std::vector<Sensor*> sensors;
 };
 
 #endif

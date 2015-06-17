@@ -15,6 +15,9 @@ private:
 	int speed_limit;
 	int sonar_limit;
 	bool isDriving;
+
+	/* Current sensor data */
+	
 };
 
 #endif

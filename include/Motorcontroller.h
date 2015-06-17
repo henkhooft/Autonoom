@@ -3,6 +3,8 @@
 
 #include "ConnectionHandler.h"
 #include "Movement.h"
+#include <string>
+#include <unistd.h>
 
 class Motorcontroller
 {
@@ -12,7 +14,7 @@ public:
 	bool drive(Movement move);
 	void stop();
 private:
-	ConnectionHandler* apCon;
+	ConnectionHandler& con;
 };
 
 #endif

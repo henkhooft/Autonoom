@@ -4,18 +4,22 @@
 ConnectionHandler::ConnectionHandler()
 {
 	init();
+
+	// run();
 }
 
 // Destructor
 ConnectionHandler::~ConnectionHandler()
 {
 	if (USB != 0){
+
+		// TODO restore old port settings
 		close(USB);
 	}
 }
 
 /**
- * @brief Initializes a serial connection for transfering data.
+ * @brief Initializes a serial connection on the UART interface for transfering data.
  * @details [long description]
  */
 void ConnectionHandler::init()
@@ -35,7 +39,6 @@ void ConnectionHandler::init()
 		/* Configure port */
 	struct termios tty;
 	struct termios tty_old;
-	struct sigaction saio;
 	memset (&tty, 0, sizeof tty);
 
 	/* Error handling */
@@ -46,16 +49,6 @@ void ConnectionHandler::init()
 
 	/* Save old tty parameters */
 	tty_old = tty;
-
-	/* Set signal handler */
-	saio.sa_handler = &ConnectionHandler::signal_handler_IO;
-	saio.sa_flags = 0;
-	saio.sa_restorer = NULL;
-	sigaction(SIGIO, &saio, NULL);
-
-	fcntl(USB, F_SETFL, FASYNC);
-	fcntl(USB, F_SETOWN, getpid());
-
 
 	/* Set Baud rate */
 	cfsetospeed(&tty, (speed_t)B9600);
@@ -68,14 +61,19 @@ void ConnectionHandler::init()
 	tty.c_cflag     |=  CS8;
 
 	tty.c_cflag     &=  ~CRTSCTS;           // no flow control
-	tty.c_cc[VMIN]   =  1;                  // read doesn't block
-	tty.c_cc[VTIME]  =  5;                  // 0.5 seconds read timeout
+	tty.c_cc[VMIN]   =  5;                  // read doesn't block
+	tty.c_cc[VTIME]  =  0;                  // 0.5 seconds read timeout
 	tty.c_cflag     |=  CREAD | CLOCAL;     // turn on READ & ignore ctrl lines
+
+	/* Extra */
+	tty.c_iflag = IGNPAR;
+	tty.c_lflag = 0;
+	tty.c_oflag = 0;
 
 	/* Make raw */
 	cfmakeraw(&tty);
 
-	/* Flush Port, then applies attributes */
+	/* Flush Port, then applY attributes */
 	tcflush( USB, TCIFLUSH );
 	if ( tcsetattr ( USB, TCSANOW, &tty ) != 0) {
 	   ROS_ERROR_STREAM("Error " << errno << " from tcsetattr");
@@ -83,49 +81,46 @@ void ConnectionHandler::init()
 	}
 
 	if (!errorOccured) {
-		ROS_INFO("Serial port configured....");
+		ROS_INFO("Serial port configured.... sending ping");
 
-		/* Send setup message */
-		sleep(1);	// Wait a sec...
-		writeString("HELLO WORLD\r");
+		sleep(1);				// Wait a sec...
+		writeString("100");		// Send ping
 	}
 }
 
 /**
- * @brief Reads data into a buffer.
+ * @brief Threadable method for reading in data on the serial device
  * @details [long description]
- * 
- * @param buffer Buffer to read into.
- * @return [description]
+ * @return Pointer to method
  */
-int ConnectionHandler::readData(char buffer[])
+void* ConnectionHandler::run()
 {
+	volatile int STOP = false;
+	int result = 0;
+	char buf[255];
+
 	if (USB != 0) {
-		ROS_INFO("Starting reading data");
-		int n = 0, spot = 0;
-		char buf = '\0';
-		// memset(buffer, '\0', sizeof (buffer));
+		while(STOP == false) {
 
-		// do {
-		n = read( USB, &buf, 1);
-		// sprintf( &buffer[spot], "%c", buf );
-		// spot += n;
-		// } while (buf != '\r' && n > 0);
+			result = read(USB, buf, 255);		// Read 255 bytes
+			buf[result] = 0; 					// Set the end of a string
+			printf(":%s:%d\n", buf, result);
 
-		if (n < 0) {
-			std::cout << "Error reading: " << strerror(errno) << " with error: " << n << std::endl;
-		}
-		else if (n == 0) {
-			std::cout << "Read nothing!" << std::endl;
-		}
-		else {
-			std::cout << "Response: " << buffer << std::endl;
-			return n;
+			if (buf[0] == 'z') {				// Break on 'z' character
+				STOP = true;
+				ROS_INFO("Serial listener stopped");
+			}
 		}
 	}
-	return 0;
 }
 
+/**
+ * @brief Write a string to the UART interface
+ * @details [long description]
+ * 
+ * @param s String to write
+ * @return If write was succesfull
+ */
 bool ConnectionHandler::writeString(std::string s)
 {
 	if (USB != 0) {
@@ -137,6 +132,12 @@ bool ConnectionHandler::writeString(std::string s)
 	return false;
 }
 
+/**
+ * @brief Handles the commands in a string
+ * @details Parses the string according to the '|' character and calls the corresponding handler
+ * 
+ * @param s String to parse
+ */
 void ConnectionHandler::parseData(std::string s)
 {
 	std::stringstream stream;
@@ -155,12 +156,17 @@ void ConnectionHandler::parseData(std::string s)
 		/* String comparisons */
 		segment = seglist.front();
 
-		if (segment.compare("101") == 0) {
-			// PingAck
+		if (segment.compare("101") == 0) {			// Ping ack
+			ROS_INFO("ATmega is found to be online!");
 		}
-		else if (segment.compare("201") == 0) {
-			// SonarAck
+		else if (segment.compare("201") == 0) {		// Sonar ack
+			int counter = 1;
 
+			for(std::vector<Sensor*>::iterator it = sensors.begin(); it != sensors.end(); ++it) {
+    			/* std::cout << *it; ... */
+    			Sonar* son = dynamic_cast<Sonar*>(*it);
+    			ROS_INFO_STREAM("Sonar " << counter << " reports " << seglist[counter] << " cm");
+			}
 		}
 	}
 	else {
@@ -168,29 +174,15 @@ void ConnectionHandler::parseData(std::string s)
 	}
 }
 
-void ConnectionHandler::signal_handler_IO(int status)
+/**
+ * @brief Start the threaded listener
+ * @details [long description]
+ */
+void ConnectionHandler::start()
 {
-	if (USB != 0) {
-		ROS_INFO("Starting reading data");
-		int n = 0, spot = 0;
-		char buf = '\0';
-		// memset(buffer, '\0', sizeof (buffer));
+	pthread_t thread1;
+	int iret1;
 
-		// do {
-		n = read( USB, &buf, 1);
-		// sprintf( &buffer[spot], "%c", buf );
-		// spot += n;
-		// } while (buf != '\r' && n > 0);
-
-		if (n < 0) {
-			std::cout << "Error reading: " << strerror(errno) << " with error: " << n << std::endl;
-		}
-		else if (n == 0) {
-			std::cout << "Read nothing!" << std::endl;
-		}
-		else {
-			std::cout << "Response: " << buffer << std::endl;
-			return n;
-	}
-	
+	iret1 = pthread_create(&thread1, NULL, &ConnectionHandler::run_helper, &ConnectionHandler::getInstance());
+	ROS_INFO("Serial thread started");
 }

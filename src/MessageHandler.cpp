@@ -4,7 +4,7 @@
 MessageHandler::MessageHandler(ros::NodeHandle* _nh, Options* _options)
 : nh(_nh), options(_options)
 {
-	ros::Subscriber sub = nh->subscribe("carrequest", 1000, &MessageHandler::requestCallback, this);
+	sub = nh->subscribe("carrequest", 1, &MessageHandler::requestCallback, this);
 	pub_status = nh->advertise<autonoom::CarResponse>("carresponse", 1000);
 }
 
@@ -32,23 +32,23 @@ void MessageHandler::requestCallback(const autonoom::CarRequest& msg)
 	}
 
 
-	ROS_DEBUG("Received a new car request");
+	ROS_INFO("Received a new car request");
 
 	if (msg.start != current_start)
 	{
 		// Start the race
-		ROS_DEBUG("The car is starting/stopping");
+		ROS_INFO("The car is starting/stopping");
 	}
 
 	if (msg.new_max_speed != current_max_speed)
 	{
 		// Write new max speed
-		ROS_DEBUG("Maximum speed is changed to %ld", (long int)msg.new_max_speed);
+		ROS_INFO("Maximum speed is changed to %ld", (long int)msg.new_max_speed);
 	}
 
 	if (msg.new_max_range != current_max_range)
 	{
 		// Write new maximum sonar range
-		ROS_DEBUG("Maximum sonar range is changed to %ld", (long int)msg.new_max_range);
+		ROS_INFO("Maximum sonar range is changed to %ld", (long int)msg.new_max_range);
 	}
 }

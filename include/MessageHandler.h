@@ -19,6 +19,7 @@ private:
 	// ROS attributes
 	ros::NodeHandle* nh;
 	ros::Publisher pub_status;
+	ros::Subscriber sub;
 };
 
 #endif
