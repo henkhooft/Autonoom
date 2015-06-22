@@ -106,7 +106,7 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(autonoom_node src/main.cpp src/ConnectionHandler.cpp src/ImageHandler.cpp src/ImageProcessor.cpp 
+add_executable(autonoom_node src/main.cpp src/ConnectionHandler.cpp src/ImageHandler.cpp 
 	src/Motorcontroller.cpp src/Movement.cpp src/Options.cpp src/SensorHandler.cpp src/Sonar.cpp src/MessageHandler.cpp)
 
 ## Add cmake target dependencies of the executable/library

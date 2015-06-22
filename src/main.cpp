@@ -31,8 +31,8 @@ int main(int argc, char **argv)
 	ConnectionHandler c = ConnectionHandler::getInstance();
 	c.addSensors(sensors);
 
-	SensorHandler sh(sensors);
 	Motorcontroller mc;
+	SensorHandler sh(sensors, mc);
 	c.start();
 
 	sleep(3);
@@ -48,6 +48,8 @@ int main(int argc, char **argv)
 	/* Test case */
 	Movement move(30, 30); // 30 degree for 30 cm forward
 	mc.drive(move);
+
+	sleep(3);
 
 	ROS_INFO("Finished test case");
 

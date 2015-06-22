@@ -3,7 +3,7 @@
 
 #include "Sensor.h"
 
-class Sonar : Sensor
+class Sonar : public Sensor
 {
 public:
 	Sonar(int _address);

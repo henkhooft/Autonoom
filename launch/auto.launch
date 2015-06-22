@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<launch>
+    <node name="autonoom_node" pkg="autonoom" type="visensor_node" clear_params="false" output="screen">
+    </node> 
+
+    <node  ns="/" name="stereo_image_proc" pkg="stereo_image_proc" type="stereo_image_proc" clear_params="true" output="screen">
+       <remap from="/left/image_raw" to="/cam1/image_raw" />
+       <remap from="/left/camera_info" to="/cam1/camera_info" />
+       <remap from="/right/image_raw" to="/cam0/image_raw" />
+       <remap from="/right/camera_info" to="/cam0/camera_info" />
+        <param name="queue_size" value="200000" />
+    </node>
+
+
+    <node pkg="viso2_ros" type="stereo_odometer" name="viso" output="screen">
+        <remap from="stereo" to="/" />
+	<remap from="/left/camera_info" to="/cam1/camera_info" />
+	<remap from="/right/camera_info" to="/cam0/camera_info" />
+	<remap from="image" to="image_rect" />
+	<param name="approximate_sync" value="true" />
+	<param name="max_features" value="4" />
+	<param name="ransac_iters" value="200" />
+	<param name="bucket_width" value="50" />
+	<param name="bucket_height" value="50" />
+	<param name="nms_n" value="4" />
+	<param name="nms_tau" value="1" />  
+
+	<param name="odom_frame_id" value="odom" />
+	<param name="publish_tf" value="true"/>
+	<param name="base_link_frame_id" value="base_link" />
+    </node>
+
+    <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+	<remap from="/imu_data" to="/imu0" />
+	<remap from="/vo" to="/viso/odometry" />
+	<param name="output_frame" value="odom"/>
+	<param name="freq" value="1.0"/>
+	<param name="sensor_timeout" value="1.0"/>
+	<param name="odom_used" value="false"/>
+	<param name="imu_used" value="true"/>
+	<param name="vo_used" value="true"/>
+	<param name="debug" value="true"/>
+	<param name="self_diagnose" value="true"/>
+  </node>
+
+  <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgwick">
+	<remap from="imu/data_raw" to="imu0" />
+  </node>
+</launch>

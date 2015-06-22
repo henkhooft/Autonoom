@@ -6,7 +6,8 @@ ImageHandler::ImageHandler(ros::NodeHandle* _nh)
 {
 	// nh = new ros::NodeHandle();
 	it = new image_transport::ImageTransport(*nh);
-	sub = it->subscribe("camera/image", 1, &ImageHandler::imageCallback, this);
+	// sub = it->subscribe("usb_cam/image_raw", 1, &ImageHandler::imageCallback, this);
+	sub = nh->subscribe("/blobs", 1, &ImageHandler::blobCallback, this);
 
 }
 
@@ -16,22 +17,25 @@ ImageHandler::~ImageHandler()
 	delete it;
 }
 
-/**
- * @brief Callback after a new image has been received.
- * @details [long description]
- * 
- * @param msg Pointer to the image object.
- */
-void ImageHandler::imageCallback(const sensor_msgs::ImageConstPtr& msg)
+void ImageHandler::blobCallback(const cmvision::Blobs::ConstPtr& msg)
 {
-	ROS_INFO("Image message received");
+	ROS_INFO("Received a blob");
+	
+	/* Loop through blobs */
+	for (int i=0; i < msg->blob_count; ++i)
+	{
+		const cmvision::Blob& b = msg->blobs[i];
+
+		/* Handle blobs with the label 'Lint' attached */
+		if (b.name.compare("Lint") == 0) {
+			
+		}
+
+		/* Determine if blob is close to left or right */
+		int x = b.x;
+			/* Have several blobs confirm this data */
+			
+				/* Take action and move left or right */
+	}
 }
 
-/**
- * @brief Processes an image.
- * @details [long description]
- */
-void ImageHandler::process()
-{
-
-}

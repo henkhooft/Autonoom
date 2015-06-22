@@ -82,9 +82,6 @@ void ConnectionHandler::init()
 
 	if (!errorOccured) {
 		ROS_INFO("Serial port configured.... sending ping");
-
-		sleep(1);				// Wait a sec...
-		writeString("100");		// Send ping
 	}
 }
 
@@ -98,6 +95,9 @@ void* ConnectionHandler::run()
 	volatile int STOP = false;
 	int result = 0;
 	char buf[255];
+
+	sleep(1);				// Wait a sec...
+	writeString("100|");		// Send ping
 
 	if (USB != 0) {
 		while(STOP == false) {
