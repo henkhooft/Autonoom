@@ -15,5 +15,5 @@ Sonar::~Sonar()
 
 int Sonar::getLastMeasurement()
 {
-	return 0;
+	return lastMeasurementInCm;
 }

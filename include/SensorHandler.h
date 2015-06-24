@@ -11,14 +11,14 @@
 class SensorHandler
 {
 public:
-	SensorHandler(std::vector<Sensor*> _sensors, Motorcontroller _mc);
+	SensorHandler(std::vector<Sensor*>& _sensors, Motorcontroller& _mc, ConnectionHandler& _con);
 	~SensorHandler();
 	void updateAllSensors();
-private:
-	std::vector<Sensor*> sensors;
-	Motorcontroller mc;
-	ConnectionHandler& cn;
 	void calculateNextMove();
+private:
+	std::vector<Sensor*>& sensors;
+	Motorcontroller& mc;
+	ConnectionHandler& con;
 };
 
 #endif

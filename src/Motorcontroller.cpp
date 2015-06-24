@@ -1,10 +1,12 @@
 #include "Motorcontroller.h"
 
+bool Motorcontroller::TURBO = false;
+
 // Constructor
-Motorcontroller::Motorcontroller()
-: con(ConnectionHandler::getInstance())
+Motorcontroller::Motorcontroller(ConnectionHandler& _con)
+: con(_con) 
 {
-	
+
 }
 
 // Destructor
@@ -13,28 +15,47 @@ Motorcontroller::~Motorcontroller()
 
 }
 
-bool Motorcontroller::drive(Movement move)
+void Motorcontroller::steer(Movement move)
 {
 	int wheel_angle = move.getWheelAngle();
+	std::ostringstream ss;
+	ss << "400|" << wheel_angle;
+
+	ROS_INFO("Executing move with angle %d", wheel_angle-90); 
+	con.writeString(ss.str());
+}
+
+bool Motorcontroller::drive(Movement move)
+{
 	int distance = move.getDistance();
 
-	ROS_INFO("Executing move with %d wheelangle and distance %d cm", wheel_angle, distance);
+	ROS_INFO("Executing move with speed %d", distance-90); 
 
-	std::string s;
-	s += "400|" + wheel_angle;
+	if (TURBO)
+	{
+		for (int i=0; i<20; i++)
+		{
+			ROS_FATAL("GOING FULL TURBO MODE!!!!!!");
+		}
+		if (distance > 90)
+		{
+			distance = 120;
+		}
+		else if (distance < 90)
+		{
+			distance = 60;
+		}		
+	}
 
-	con.writeString(s);
+	// sleep(1);
 
-	/* Move with a specified length */
-	int cm_per_sec = 10;
-
-	con.writeString("300|10");
-	sleep(distance / cm_per_sec);
-	con.writeString("300|0");
+	std::ostringstream sd;
+	sd << "300|" << distance;
+	con.writeString(sd.str());
 }
 
 void Motorcontroller::stop()
 {
 	ROS_INFO("Motor forcefully stopped");
-	con.writeString("300|0");
+	con.writeString("300|90");
 }

@@ -9,12 +9,15 @@
 class Motorcontroller
 {
 public:
-	Motorcontroller();
+	Motorcontroller(ConnectionHandler& _con);
 	~Motorcontroller();
+	void steer(Movement move);
 	bool drive(Movement move);
 	void stop();
+	static bool TURBO;
 private:
 	ConnectionHandler& con;
+	
 };
 
 #endif

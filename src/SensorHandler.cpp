@@ -3,8 +3,8 @@
 #define MAX_SONAR_RANGE 100
 
 // Constructor
-SensorHandler::SensorHandler(std::vector<Sensor*> _sensors, Motorcontroller _mc)
-: cn(ConnectionHandler::getInstance()), sensors(_sensors), mc(_mc)
+SensorHandler::SensorHandler(std::vector<Sensor*>& _sensors, Motorcontroller& _mc, ConnectionHandler& _con)
+: con(_con), sensors(_sensors), mc(_mc)
 {
 	
 }
@@ -17,7 +17,8 @@ SensorHandler::~SensorHandler()
 
 void SensorHandler::updateAllSensors()
 {
-	if (cn.writeString("200")) {
+	if (con.writeString("200|")) {
+		sleep(1);
 		ROS_DEBUG("Trying to update sonars");
 	}
 	else {
@@ -64,17 +65,37 @@ void SensorHandler::calculateNextMove()
 	Movement* move = NULL;
 
 	/* Go around the object */
-	if (front) {
-		move = new Movement(0, 0);	// Stop if obstacle in the front
+	if (!front)					// Move straight
+	{
+		move = new Movement(90, 100);
+		ROS_INFO("Gotta go straight");
 	}
-	else {
-		move = new Movement(0, 30); // Drive 30 cm forward
+	else if (front && !left) 	// Dodge to left
+	{
+		move = new Movement(70, 100);
+		ROS_INFO("Dodging to the left");
+	}
+	else if (front && !right)	// Dodge to right
+	{
+		move = new Movement(110, 100);	
+		ROS_INFO("Dodging to the right");
+	}
+	else						// Cant see for shit, move backwards
+	{
+		move = new Movement(90, 80);
+		ROS_INFO("Stopping for obstacle");
 	}
 
+
+	if (back)
+	{
+		ROS_WARN("TEGENSTANDER GEDETECTEERD!");
+	}
 
 
 	if (move != NULL) {
-		
+		mc.steer(*move);
+		mc.drive(*move);
 	}
 	else {
 

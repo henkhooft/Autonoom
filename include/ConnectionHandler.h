@@ -4,7 +4,8 @@
 #include <stdio.h>		// Standard input/output
 #include <iostream>
 #include <stdlib.h>		
-#include <string.h>		// String functions
+#include <string>		// String functions
+#include <sstream>
 #include <unistd.h>		// UNIX standard functions
 #include <fcntl.h>		// File control
 #include <errno.h>		// Error definitions
@@ -18,27 +19,22 @@
 
 class ConnectionHandler
 {
-public:
+public:	
+	ConnectionHandler(std::vector<Sensor*>& _sensors);
 	~ConnectionHandler();
-	static ConnectionHandler& getInstance()
-	{
-		static ConnectionHandler instance;
-		return instance;
-	}
-	void init();
+
 	void parseData(std::string s);
 	bool writeString(std::string s);
 	void start();
-	inline void addSensors(std::vector<Sensor*>& _sensors) {sensors = _sensors;}
 private:
-	ConnectionHandler();
 	void *run();
+	void init();
+	std::vector<Sensor*>& sensors;
 	static void *run_helper(void *context)
 	{
 		return ((ConnectionHandler*)context)->run();
 	}
 	int USB;
-	std::vector<Sensor*> sensors;
 };
 
 #endif

@@ -9,6 +9,7 @@ public:
 	Sonar(int _address);
 	~Sonar();
 	int getLastMeasurement();
+	int setMeasurement(int value) { lastMeasurementInCm = value; }
 private:
 	int lastMeasurementInCm;
 };

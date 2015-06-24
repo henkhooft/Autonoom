@@ -31,6 +31,17 @@ void MessageHandler::requestCallback(const autonoom::CarRequest& msg)
 		ROS_ERROR("Options was not initialized");
 	}
 
+	if (msg.turbo)
+	{
+		ROS_FATAL("TURBO ENGAGED :D:D:D:D:D:D");
+		Motorcontroller::TURBO = true;
+	}
+	else
+	{
+		ROS_WARN("TURBO DISENGAGED....  :(");
+		Motorcontroller::TURBO = false;
+	}
+
 
 	ROS_INFO("Received a new car request");
 

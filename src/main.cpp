@@ -20,6 +20,10 @@ int main(int argc, char **argv)
 	std::vector<Sensor*> sensors;
 
 	/* Fill vector with sensors (HARDCODED) */
+	sensors.push_back(new Sonar(1));
+	sensors.push_back(new Sonar(2));
+	sensors.push_back(new Sonar(3));
+	sensors.push_back(new Sonar(4));
 
 	Options* options = new Options();
 
@@ -28,11 +32,10 @@ int main(int argc, char **argv)
 	ImageHandler ih(nh);
 
 	/* Setup connection handler */
-	ConnectionHandler c = ConnectionHandler::getInstance();
-	c.addSensors(sensors);
+	ConnectionHandler c(sensors);
 
-	Motorcontroller mc;
-	SensorHandler sh(sensors, mc);
+	Motorcontroller mc(c);
+	SensorHandler sh(sensors, mc, c);
 	c.start();
 
 	sleep(3);
@@ -42,16 +45,26 @@ int main(int argc, char **argv)
 	sleep(5);
 
 	ROS_INFO("Executing test case...");
-
 	sleep(5);
 
 	/* Test case */
 	Movement move(30, 30); // 30 degree for 30 cm forward
 	mc.drive(move);
-
 	sleep(3);
-
 	ROS_INFO("Finished test case");
+	c.writeString("200|");
+	ROS_INFO("Finished sonar test");
+
+	sh.calculateNextMove();
+
+	ros::Rate loop_rate(10);
+	while (ros::ok())
+	{
+		sh.calculateNextMove();
+		ros::spinOnce();
+
+		loop_rate.sleep();
+	}
 
 	ros::spin();
 	return 0;

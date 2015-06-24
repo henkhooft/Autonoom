@@ -1,7 +1,9 @@
 #include "ConnectionHandler.h"
 
+
 // Constructor
-ConnectionHandler::ConnectionHandler()
+ConnectionHandler::ConnectionHandler(std::vector<Sensor*>& _sensors)
+	: sensors(_sensors)
 {
 	init();
 
@@ -25,7 +27,7 @@ ConnectionHandler::~ConnectionHandler()
 void ConnectionHandler::init()
 {
 	bool errorOccured = false;
-	std::string device = "/dev/ttyAMA0";
+	std::string device = "/dev/ttyACM0";
 	ROS_INFO("Starting serial connection on %s", device.c_str());
 
 	/* Open File Descriptor */
@@ -81,7 +83,7 @@ void ConnectionHandler::init()
 	}
 
 	if (!errorOccured) {
-		ROS_INFO("Serial port configured.... sending ping");
+		ROS_INFO("Serial port configured...");
 	}
 }
 
@@ -94,23 +96,33 @@ void* ConnectionHandler::run()
 {
 	volatile int STOP = false;
 	int result = 0;
-	char buf[255];
 
-	sleep(1);				// Wait a sec...
-	writeString("100|");		// Send ping
+	sleep(2);				// Wait a sec...
+	writeString("100|");	// Send ping
+
+	bool stringComplete = false;
+	std::string inputString = "";
 
 	if (USB != 0) {
 		while(STOP == false) {
 
-			result = read(USB, buf, 255);		// Read 255 bytes
-			buf[result] = 0; 					// Set the end of a string
-			printf(":%s:%d\n", buf, result);
+			char inChar[1];
+			result = read(USB, inChar, 1);
+			inputString += inChar;
 
-			if (buf[0] == 'z') {				// Break on 'z' character
-				STOP = true;
-				ROS_INFO("Serial listener stopped");
+			if (inChar[0] == '\n')
+			{
+				inputString.erase(inputString.size() - 1); // Remove carriage return
+				inputString.erase( std::remove(inputString.begin(), inputString.end(), '\r'), inputString.end() );
+
+				ROS_INFO("Got input: %s", inputString.c_str());
+				parseData(inputString);
+				inputString = "";
 			}
 		}
+	}
+	else {
+		ROS_ERROR("Thread did not find a valid file descriptor");
 	}
 }
 
@@ -123,8 +135,11 @@ void* ConnectionHandler::run()
  */
 bool ConnectionHandler::writeString(std::string s)
 {
+	std::string copy(s);
+	s += '\n';
 	if (USB != 0) {
 		if (write(USB, s.c_str(), s.size()) > 0) {
+			ROS_INFO("Written: %s", copy.c_str());
 			return true;
 		}
 	}
@@ -148,7 +163,7 @@ void ConnectionHandler::parseData(std::string s)
 
 	while(std::getline(stream, segment, '|')) {
 		seglist.push_back(segment);
-		std::cout << "Segment: " << segment << std::endl;
+		// std::cout << "Segment: " << segment << std::endl;
 	}
 
 	if (seglist.size() > 0) {
@@ -163,9 +178,15 @@ void ConnectionHandler::parseData(std::string s)
 			int counter = 1;
 
 			for(std::vector<Sensor*>::iterator it = sensors.begin(); it != sensors.end(); ++it) {
-    			/* std::cout << *it; ... */
+
     			Sonar* son = dynamic_cast<Sonar*>(*it);
     			ROS_INFO_STREAM("Sonar " << counter << " reports " << seglist[counter] << " cm");
+				
+				int s_value = 0;
+				std::istringstream(seglist[counter]) >> s_value;
+
+				son->setMeasurement(s_value);
+				counter++;
 			}
 		}
 	}
@@ -183,6 +204,6 @@ void ConnectionHandler::start()
 	pthread_t thread1;
 	int iret1;
 
-	iret1 = pthread_create(&thread1, NULL, &ConnectionHandler::run_helper, &ConnectionHandler::getInstance());
+	iret1 = pthread_create(&thread1, NULL, &ConnectionHandler::run_helper, this);
 	ROS_INFO("Serial thread started");
 }

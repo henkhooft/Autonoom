@@ -5,6 +5,7 @@
 #include "autonoom/CarRequest.h"
 #include "autonoom/CarResponse.h"
 #include "Options.h"
+#include "Motorcontroller.h"
 
 // Class for handling messages
 class MessageHandler
